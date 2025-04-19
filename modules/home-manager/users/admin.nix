@@ -82,6 +82,7 @@
     shellAliases = {
       ll = "ls -la";
       ".." = "cd ..";
+      sudo-env = "sudo -E -i";
       nixos-update = "sudo nixos-rebuild switch --flake /home/nixos/#";
       nixos-clean = "sudo nix-collect-garbage --delete-older-than 15d";
     };
