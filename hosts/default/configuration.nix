@@ -41,6 +41,7 @@
   # Enable the X11 windowing system.
   # services.xserver.enable = true;
 
+  # Enable Flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Configure keymap in X11
@@ -79,11 +80,52 @@
       "admin" = import ../../modules/home-manager/users/admin.nix;
     };
   };
+  environment.variables = { EDITOR = "vim"; };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+     #vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+     # Baseline vim configuration
+     # https://nixos.wiki/wiki/Vim
+     ((vim_configurable.override { }).customize {
+       name = "vim";
+       vimrcConfig.customRC = ''
+	 " https://gist.github.com/simonista/8703722
+	 set nocompatible
+	 syntax on
+	 filetype plugin indent on
+	 set modelines=0
+	 set number
+	 set ruler
+	 set visualbell
+	 set encoding=utf-8
+
+	 set wrap
+	 set textwidth=79
+	 set formatoptions=tcqrn1
+	 set tabstop=2
+	 set shiftwidth=2
+	 set softtabstop=2
+	 set expandtab
+	 set noshiftround
+
+	 set scrolloff=5
+	 set backspace=indent,eol,start
+
+	 set ttyfast
+	 set laststatus=2
+
+	 set showmode
+	 set showcmd
+
+	 set hlsearch
+	 set incsearch
+	 set ignorecase
+	 set smartcase
+	 set showmatch
+       '';
+     })
      wget
      gitFull
    ];
@@ -120,6 +162,17 @@
 
   system.autoUpgrade.enable = true;
   system.autoUpgrade.allowReboot = true;
+
+  # Automatic garbage collection
+  # https://nixos.wiki/wiki/Storage_optimization
+  nix = {
+    optimise.automatic = true;
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 15d";
+    };
+  };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
