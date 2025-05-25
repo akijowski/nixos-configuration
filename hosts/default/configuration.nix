@@ -23,10 +23,11 @@
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
   # Open firewall ports for Packer
+  # https://developer.hashicorp.com/packer/integrations/hashicorp/proxmox/latest/components/builder/iso#optional
   networking.firewall = {
     enable = true;
     allowedTCPPortRanges = [
-      { from = 10000; to = 25000; }
+      { from = 8000; to = 9000; }
     ];
   };
 
