@@ -137,6 +137,7 @@
      wget
      gitFull
      htop
+     dig
    ];
 
   # Some programs need SUID wrappers, can be configured further or are
