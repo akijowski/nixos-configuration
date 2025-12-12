@@ -99,8 +99,10 @@
   programs.git = {
     enable = true;
     package = pkgs.gitFull;
-    userName = "Adam Kijowski";
-    userEmail = "agkijow@gmail.com";
+    settings = {
+      user.name = "Adam Kijowski";
+      user.email = "agkijow@gmail.com";
+    };
   };
 
   programs.direnv = {

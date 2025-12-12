@@ -96,7 +96,7 @@
      #vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
      # Baseline vim configuration
      # https://nixos.wiki/wiki/Vim
-     ((vim_configurable.override { }).customize {
+     ((vim-full.override { }).customize {
        name = "vim";
        vimrcConfig.customRC = ''
 	 " https://gist.github.com/simonista/8703722
