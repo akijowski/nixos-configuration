@@ -26,6 +26,8 @@
   # https://developer.hashicorp.com/packer/integrations/hashicorp/proxmox/latest/components/builder/iso#optional
   networking.firewall = {
     enable = true;
+    # Allow hugo static sites
+    allowedTCPPorts = [1313];
     allowedTCPPortRanges = [
       { from = 8000; to = 9000; }
     ];
