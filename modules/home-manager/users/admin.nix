@@ -21,7 +21,9 @@
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello
+    # todo: remove devbox
     pkgs.devbox
+    pkgs.devenv
     pkgs.go-task
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
