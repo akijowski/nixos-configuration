@@ -82,6 +82,8 @@
   #   ];
   # };
   admin-user.enable = true;
+  # users with super permissions for the nix daemon
+  nix.settings.trusted-users = [ "root" "admin" ];
 
   home-manager = {
     # also pass inputs to module
