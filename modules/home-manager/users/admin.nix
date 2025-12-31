@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 {
   sops = {
@@ -34,7 +34,9 @@
     # pkgs.hello
     # todo: remove devbox
     pkgs.devbox
-    pkgs.devenv
+    # https://discourse.nixos.org/t/installing-only-a-single-package-from-unstable/5598/28
+    # https://wiki.nixos.org/wiki/FAQ/Pinning_Nixpkgs
+    inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.devenv
     pkgs.go-task
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
