@@ -89,8 +89,14 @@
     users = {
       "admin" = import ../../modules/home-manager/users/admin.nix;
     };
+    # sops-nix
+    sharedModules = [
+      inputs.sops-nix.homeManagerModules.sops
+    ];
   };
-  environment.variables = { EDITOR = "vim"; };
+  environment.variables = { 
+    EDITOR = "vim";
+  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget

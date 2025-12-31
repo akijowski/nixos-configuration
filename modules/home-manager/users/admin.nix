@@ -1,6 +1,17 @@
 { config, pkgs, lib, ... }:
 
 {
+  sops = {
+    age.keyFile = "/home/admin/.config/sops/age/keys.txt";
+    age.generateKey = false;
+    defaultSopsFile = ../../../secrets/admin_user.yaml;
+    secrets = {
+      onepass_svc_acct_nixos = {
+        # default will be symlinked at ~/.config/sops-nix/secrets/<name>
+        #path = "%r/onepass_svc_acct.txt";
+      };
+    };
+  };
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "admin";
@@ -88,6 +99,14 @@
       nixos-update = "sudo nixos-rebuild switch --flake /home/nixos/#";
       nixos-clean = "sudo nix-collect-garbage --delete-older-than 15d";
     };
+    # https://zohaib.me/managing-secrets-in-nixos-home-manager-with-sops/
+    # initContent = ''
+    #   export OP_SERVICE_ACCOUNT_TOKEN=$(cat
+    #   ${config.sops.secrets.onepass_svc_acct_nixos.path})
+    # '';
+    envExtra = ''
+      export OP_SERVICE_ACCOUNT_TOKEN=$(cat ~/.config/sops-nix/secrets/onepass_svc_acct_nixos)
+    '';
     syntaxHighlighting = {
       enable = true;
     };
