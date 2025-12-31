@@ -9,6 +9,7 @@ Link Dump:
 - https://discourse.nixos.org/t/fetching-ssh-public-keys/12076/7
 - https://nix-community.github.io/home-manager/options.xhtml
 - https://nixos.wiki/wiki/Visual_Studio_Code#Remote_SSH
+- https://github.com/EmergentMind/nix-config/tree/dev
 
 Secrets:
 
