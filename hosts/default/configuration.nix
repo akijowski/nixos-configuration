@@ -106,41 +106,7 @@
      # https://nixos.wiki/wiki/Vim
      ((vim-full.override { }).customize {
        name = "vim";
-       vimrcConfig.customRC = ''
-	 " https://gist.github.com/simonista/8703722
-	 set nocompatible
-	 syntax on
-	 filetype plugin indent on
-	 set modelines=0
-	 set number
-	 set ruler
-	 set visualbell
-	 set encoding=utf-8
-
-	 set wrap
-	 set textwidth=79
-	 set formatoptions=tcqrn1
-	 set tabstop=2
-	 set shiftwidth=2
-	 set softtabstop=2
-	 set expandtab
-	 set noshiftround
-
-	 set scrolloff=5
-	 set backspace=indent,eol,start
-
-	 set ttyfast
-	 set laststatus=2
-
-	 set showmode
-	 set showcmd
-
-	 set hlsearch
-	 set incsearch
-	 set ignorecase
-	 set smartcase
-	 set showmatch
-       '';
+       vimrcConfig.customRC = builtins.readFile ./vimrc;
      })
      wget
      gitFull
@@ -149,7 +115,9 @@
      jq
      yq-go
      _1password-cli
-     secretspec
+     # https://discourse.nixos.org/t/installing-only-a-single-package-from-unstable/5598/28
+     # https://wiki.nixos.org/wiki/FAQ/Pinning_Nixpkgs
+     inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.secretspec
    ];
 
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
