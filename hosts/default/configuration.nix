@@ -142,8 +142,13 @@
      dig
      jq
      yq-go
+     _1password-cli
+     secretspec
    ];
 
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+    "1password-cli"
+  ];
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
