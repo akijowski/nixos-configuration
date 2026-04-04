@@ -119,7 +119,7 @@
      _1password-cli
      # https://discourse.nixos.org/t/installing-only-a-single-package-from-unstable/5598/28
      # https://wiki.nixos.org/wiki/FAQ/Pinning_Nixpkgs
-     inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.secretspec
+     inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.secretspec
    ];
 
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [

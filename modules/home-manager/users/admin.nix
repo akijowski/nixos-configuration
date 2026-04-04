@@ -33,11 +33,12 @@
     # # "Hello, world!" when run.
     # pkgs.hello
     # todo: remove devbox
-    pkgs.devbox
+    #pkgs.devbox
     # https://discourse.nixos.org/t/installing-only-a-single-package-from-unstable/5598/28
     # https://wiki.nixos.org/wiki/FAQ/Pinning_Nixpkgs
-    inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.devenv
+    inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.devenv
     pkgs.go-task
+    inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.opencode
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
