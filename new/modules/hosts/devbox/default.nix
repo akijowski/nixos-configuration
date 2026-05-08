@@ -7,5 +7,6 @@
       self.nixosModules.devboxModule
       self.nixosModules.basicHomeManager
     ];
-  ];
+  };
+}
   
