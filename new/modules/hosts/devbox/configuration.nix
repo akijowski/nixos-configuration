@@ -13,13 +13,8 @@
         dig
         jq
         yq-go
-        _1password-cli
       ];
     };
-
-    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-      "1password-cli"
-    ];
 
     programs = {
       zsh.enable = true;
