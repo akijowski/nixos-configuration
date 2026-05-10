@@ -1,15 +1,17 @@
 # Edit this configuration file to define what should be installed on
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
-{ config, lib, pkgs, ... }:
-
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      ./disk-config.nix
-    ];
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    ./disk-config.nix
+  ];
 
   networking.hostName = "devbox"; # Define your hostname.
 
@@ -50,7 +52,7 @@
   users.users.akijowski = {
     isNormalUser = true;
     description = "Adam Kijowski";
-    extraGroups = [ "wheel" "networkmanager" ];
+    extraGroups = ["wheel" "networkmanager"];
     initialPassword = "password123";
     shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [
@@ -63,7 +65,7 @@
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
-    git
+    gitFull
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
   ];
@@ -93,7 +95,7 @@
       PasswordAuthentication = false;
       KbdInteractiveAuthentication = false;
       PermitRootLogin = "no";
-      AllowUsers = [ "akijowski" ];
+      AllowUsers = ["akijowski"];
     };
   };
   services.qemuGuest.enable = true;
@@ -124,8 +126,8 @@
     };
     optimise.automatic = true;
     settings = {
-      experimental-features = [ "nix-command" "flakes" ];
-      trusted-users = [ "root" ];
+      experimental-features = ["nix-command" "flakes"];
+      trusted-users = ["root"];
     };
   };
 
@@ -148,4 +150,3 @@
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "25.11"; # Did you read the comment?
 }
-
