@@ -1,5 +1,25 @@
 # FLAKES AND STUFF
 
+The repo maintains my nixos-configurations.
+
+- [Flake-parts](https://flake.parts)
+
+Right now the [flake.nix](./flake.nix) just imports
+a [nixos.nix](./modules/nixos.nix) and
+[flake-parts.nix](./modules/flake-parts.nix). Which in turn imports the files
+at the same level.
+
+I promise I will clean this directory structure up and use nixosModules and
+homeManagerModules as part of the refactor.
+
+This repo needs to manage multiple hosts.
+
+### TODO: Add setup steps on new NixOS install
+
+1. disko install with flake
+2. nixos-install with flake
+
+## Old
 TODO: Clean this up
 
 Link Dump:

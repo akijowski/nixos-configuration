@@ -1,37 +1,44 @@
 {
-  description = "Nixos config flake";
+  description = "NixOS System Configuration";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
-
-    unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-
-    home-manager = {
-      # Pin to the correct version of nixpkgs
-      url = "github:nix-community/home-manager/release-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    stable.url = "github:nixos/nixpkgs?ref=nixos-25.11";
+    disko = {
+      url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    ssh-keys-gh = {
-      url = "https://github.com/akijowski.keys";
-      flake = false;
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    systems.url = "github:nix-systems/default";
+    #import-tree.url = "github:vic/import-tree";
+    alejandra = {
+      url = "github:kamadorueda/alejandra/4.0.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, unstable, ... }@inputs: {
-    # use "nixos", or your hostname as the name of the configuration
-    # it's a better practice than "default" shown in the video
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      specialArgs = {inherit inputs;};
-      modules = [
-        ./hosts/default/configuration.nix
-        inputs.home-manager.nixosModules.default
+  outputs = inputs @ {
+    self,
+    flake-parts,
+    alejandra,
+    ...
+  }:
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = import inputs.systems;
+
+      imports = [
+        ./modules/flake-parts.nix
+        ./modules/nixos.nix
       ];
+
+      flake.formatter = alejandra.defaultPackage;
     };
-  };
 }

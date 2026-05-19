@@ -9,6 +9,7 @@
   ...
 }: {
   imports = [
+    # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/profiles/qemu-guest.nix
     (modulesPath + "/profiles/qemu-guest.nix")
   ];
 
