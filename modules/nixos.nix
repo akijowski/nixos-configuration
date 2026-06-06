@@ -4,7 +4,7 @@
   ...
 }: {
   flake.nixosConfigurations = {
-    devbox = inputs.nixpkgs.lib.nixosSystem {
+    devnix = inputs.nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         ./configuration.nix

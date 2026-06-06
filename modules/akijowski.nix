@@ -10,11 +10,11 @@ in {
   home.username = "akijowski";
   home.homeDirectory = "/home/akijowski";
 
-  home.file.".nixos" = {
-    source = link /etc/nixos;
-    recursive = true;
-    onChange = concatWith "\n" ["sudo chown -R akijowski:users ${config.home.homeDirectory}/.nixos"];
-  };
+  #home.file.".nixos" = {
+  #  source = link /etc/nixos;
+  #  recursive = true;
+  #  onChange = concatWith "\n" ["sudo chown -R akijowski:users ${config.home.homeDirectory}/.nixos"];
+  #};
 
   programs.delta = {
     enable = true;

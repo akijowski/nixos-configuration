@@ -13,7 +13,7 @@
     ./disk-config.nix
   ];
 
-  networking.hostName = "devbox"; # Define your hostname.
+  networking.hostName = "devnix"; # Define your hostname.
 
   # Configure network connections interactively with nmcli or nmtui.
   networking.networkmanager.enable = true;
@@ -59,8 +59,6 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEbCjI+CHR4DJAjZk8zfhcvs/cKks5SFarnI65qTGouk akijowski@mbp14"
     ];
   };
-
-  # programs.firefox.enable = true;
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
@@ -110,11 +108,23 @@
   };
   services.qemuGuest.enable = true;
 
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  # https://wiki.nixos.org/wiki/Tailscale
+  services.tailscale.enable = true;
+
+  networking = {
+    nftables.enable = true;
+    firewall = {
+      enable = true;
+      # Always allow traffic from your Tailscale network
+      trustedInterfaces = [config.services.tailscale.interfaceName];
+      # Allow the Tailscale UDP port through the firewall
+      allowedUDPPorts = [config.services.tailscale.port];
+    };
+  };
+
+  systemd.services.tailscaled.serviceConfig.Environment = [
+    "TS_DEBUG_FIREWALL_MODE=nftables"
+  ];
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
