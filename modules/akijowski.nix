@@ -10,12 +10,6 @@ in {
   home.username = "akijowski";
   home.homeDirectory = "/home/akijowski";
 
-  #home.file.".nixos" = {
-  #  source = link /etc/nixos;
-  #  recursive = true;
-  #  onChange = concatWith "\n" ["sudo chown -R akijowski:users ${config.home.homeDirectory}/.nixos"];
-  #};
-
   programs.delta = {
     enable = true;
     enableGitIntegration = true;
@@ -65,21 +59,21 @@ in {
     #'';
   };
 
-  # programs.vscode = {
-  #   enable = true;
-  #   package = pkgs.vscode;
-  #   profiles.default.extensions = with pkgs.vscode-extensions; [
-  #     hashicorp.terraform
-  #   ];
-  #   # profiles = {
-  #   #   admin = {
-  #   #     enableExtensionUpdateCheck = true;
-  #   #     extensions = with pkgs.vscode-extensions; [
-  #   #       hashicorp.terraform
-  #   #     ];
-  #   #   };
-  #   # };
-  # };
+  programs.vscode = {
+    enable = true;
+    package = pkgs.vscode;
+    profiles.default.extensions = with pkgs.vscode-extensions; [
+      hashicorp.terraform
+    ];
+    # profiles = {
+    #   admin = {
+    #     enableExtensionUpdateCheck = true;
+    #     extensions = with pkgs.vscode-extensions; [
+    #       hashicorp.terraform
+    #     ];
+    #   };
+    # };
+  };
   #sops = {
   #  age.keyFile = "${config.home.homeDirectory}/.config/sops/age/key.txt";
   #  age.generateKey = false;

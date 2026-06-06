@@ -24,6 +24,9 @@
         {
           home-manager.users.akijowski = ./akijowski.nix;
         }
+        {
+          nixpkgs.config.allowUnfree = true;
+        }
       ];
     };
   };
