@@ -54,9 +54,9 @@ in {
     #   export OP_SERVICE_ACCOUNT_TOKEN=$(cat
     #   ${config.sops.secrets.onepass_svc_acct_nixos.path})
     # '';
-    #envExtra = ''
-    #  export OP_SERVICE_ACCOUNT_TOKEN=$(cat ~/.config/sops-nix/secrets/onepass_svc_acct_nixos)
-    #'';
+    envExtra = ''
+      export OP_SERVICE_ACCOUNT_TOKEN=$(cat ${config.sops.secrets.onepass_svc_acct_nixos.path})
+    '';
   };
 
   programs.vscode = {
@@ -75,9 +75,9 @@ in {
     # };
   };
   sops = {
-    age.keyFile = "${config.home.homeDirectory}/.config/sops/age/key.txt";
+    age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
     age.generateKey = false;
-    defaultSopsFile = "${config.home.homeDirectory}/.nixos/secrets/secrets.yaml";
+    defaultSopsFile = ../secrets/secrets.yaml;
     secrets = {
       onepass_svc_acct_nixos = { format = "yaml"; };
     };

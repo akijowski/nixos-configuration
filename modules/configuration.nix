@@ -92,6 +92,7 @@
   programs = {
     zsh.enable = true;
     nix-ld.enable = true;
+    _1password.enable = true;
   };
 
   # List services that you want to enable:
