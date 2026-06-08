@@ -74,14 +74,14 @@ in {
     #   };
     # };
   };
-  #sops = {
-  #  age.keyFile = "${config.home.homeDirectory}/.config/sops/age/key.txt";
-  #  age.generateKey = false;
-  #  defaultSopsFile = "${config.home.homeDirectory}/.nixos/secrets/admin_user.yaml";
-  #  secrets = {
-  #    onepass_svc_acct_nixos = { format = "yaml"; };
-  #  };
-  #};
+  sops = {
+    age.keyFile = "${config.home.homeDirectory}/.config/sops/age/key.txt";
+    age.generateKey = false;
+    defaultSopsFile = "${config.home.homeDirectory}/.nixos/secrets/secrets.yaml";
+    secrets = {
+      onepass_svc_acct_nixos = { format = "yaml"; };
+    };
+  };
 
   # https://discourse.nixos.org/t/installing-only-a-single-package-from-unstable/5598/28
   home.packages = [

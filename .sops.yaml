@@ -1,8 +1,8 @@
 keys:
-  - &user_admin age1uxj3pmnp42cjl38h2l0wq29qa35a6vnsyhu6p40rjyh5ydt3fdqq7lgpp3
+  - &user_akijowski age1w5tlx0jcl80eyjshjpqzhv3hm575mswtznkpfm3n9xudadt98eds3hdfp9
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
-          - *user_admin
+          - *user_akijowski
 
