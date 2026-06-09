@@ -79,13 +79,14 @@ in {
     age.generateKey = false;
     defaultSopsFile = ../secrets/secrets.yaml;
     secrets = {
-      onepass_svc_acct_nixos = { format = "yaml"; };
+      onepass_svc_acct_nixos = {format = "yaml";};
     };
   };
 
   # https://discourse.nixos.org/t/installing-only-a-single-package-from-unstable/5598/28
   home.packages = [
     pkgs.go-task
+    pkgs.devenv
     pkgs.secretspec
   ];
 

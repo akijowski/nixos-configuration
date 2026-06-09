@@ -76,6 +76,7 @@
     dig
     jq
     yq-go
+    direnv
   ];
 
   environment.variables = {
