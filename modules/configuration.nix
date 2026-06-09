@@ -76,7 +76,6 @@
     dig
     jq
     yq-go
-    direnv
   ];
 
   environment.variables = {
@@ -93,6 +92,10 @@
   programs = {
     zsh.enable = true;
     nix-ld.enable = true;
+    direnv = {
+      enable = true;
+      enableZshIntegration = true;
+    };
     _1password.enable = true;
   };
 
