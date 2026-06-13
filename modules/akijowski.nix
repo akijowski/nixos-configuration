@@ -90,6 +90,13 @@ in {
     pkgs.secretspec
   ];
 
+  xdg.configFile."direnv/direnv.toml" = {
+    enable = true;
+    text = ''
+      [global]
+      warn_timeout = "3m"
+    '';
+  };
   home.stateVersion = "25.11";
 
   programs.home-manager.enable = true;
