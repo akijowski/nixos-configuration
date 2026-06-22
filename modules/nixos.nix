@@ -11,6 +11,7 @@
         inputs.disko.nixosModules.disko
         #inputs.sops-nix.nixosModules.sops
         inputs.home-manager.nixosModules.home-manager
+        self.nixosModules.userModule
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
@@ -20,9 +21,6 @@
           home-manager.sharedModules = [
             inputs.sops-nix.homeManagerModules.sops
           ];
-        }
-        {
-          home-manager.users.akijowski = ./akijowski.nix;
         }
         {
           nixpkgs.config.allowUnfree = true;

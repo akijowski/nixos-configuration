@@ -41,25 +41,6 @@
   #   pulse.enable = true;
   # };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  # users.users.alice = {
-  #   isNormalUser = true;
-  #   extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-  #   packages = with pkgs; [
-  #     tree
-  #   ];
-  # };
-  users.users.akijowski = {
-    isNormalUser = true;
-    description = "Adam Kijowski";
-    extraGroups = ["wheel" "networkmanager"];
-    initialPassword = "password123";
-    shell = pkgs.zsh;
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEbCjI+CHR4DJAjZk8zfhcvs/cKks5SFarnI65qTGouk akijowski@mbp14"
-    ];
-  };
-
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
