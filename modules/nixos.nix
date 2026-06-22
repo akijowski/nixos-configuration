@@ -3,29 +3,35 @@
   inputs,
   ...
 }: {
-  flake.nixosConfigurations = {
+  # Import modules
+  imports = [
+    ./settings.nix
+    ./home-manager.nix
+    ./users.nix
+  ];
+
+  flake.nixosConfigurations = let
+    defaultModules = [
+      self.nixosModules.vmModule
+      self.nixosModules.tailscaleModule
+      self.nixosModules.userModule
+      self.nixosModules.systemModule
+      self.nixosModules.homeManagerModule
+      inputs.disko.nixosModules.disko
+      #inputs.sops-nix.nixosModules.sops
+      inputs.home-manager.nixosModules.home-manager
+      {
+        nixpkgs.config.allowUnfree = true;
+      }
+    ];
+  in {
     devnix = inputs.nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      modules = [
-        ./hosts/devnix/configuration.nix
-        inputs.disko.nixosModules.disko
-        #inputs.sops-nix.nixosModules.sops
-        inputs.home-manager.nixosModules.home-manager
-        self.nixosModules.userModule
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = {inherit inputs;};
-          home-manager.backupFileExtension = "backup";
-          home-manager.overwriteBackup = true;
-          home-manager.sharedModules = [
-            inputs.sops-nix.homeManagerModules.sops
-          ];
-        }
-        {
-          nixpkgs.config.allowUnfree = true;
-        }
-      ];
+      modules =
+        defaultModules
+        ++ [
+          ./hosts/devnix/configuration.nix
+        ];
     };
   };
 }
