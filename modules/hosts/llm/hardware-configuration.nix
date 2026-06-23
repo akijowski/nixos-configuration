@@ -17,11 +17,10 @@
     "virtio_scsi"
     "sd_mod"
     "sr_mod"
-    "nouveau"
   ];
   boot.initrd.kernelModules = ["dm-snapshot"];
   boot.kernelModules = ["kvm-amd"];
-  boot.extraModulePackages = [];
+  boot.extraModulePackages = [ config.hardware.nvidia.package ];
 
   boot.loader = {
     systemd-boot = {
