@@ -21,21 +21,23 @@
     "sd_mod"
     "sr_mod"
   ];
+
+  boot.initrd.kernelModules = ["dm-snapshot"];
   # force nvidia modules to be loaded
   # nvidia_udm is managed automatically so should not be installed here
-  # This should have been handled automatically but was not
-  # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/hardware/video/nvidia.nix#L445
-  boot.initrd.kernelModules = ["dm-snapshot" "nvidia" "nvidia_modeset"
-"nvidia_drm"];
-  boot.kernelModules = ["kvm-amd"];
+  # setting server.xserver.enable = true; will apply these kernel modules
+  # but we do not need the entire xserver module, just nvidia drivers
+  # https://github.com/NixOS/nixpkgs/blob/26.05/nixos/modules/hardware/video/nvidia.nix#L820-L824
+  # Do not add nvidia_udm:
+  # https://github.com/NixOS/nixpkgs/blob/26.05/nixos/modules/hardware/video/nvidia.nix#L438
+  boot.kernelModules = ["kvm-amd" "nvidia" "nvidia_modeset" "nvidia_drm"];
   # add nvidia x11 drivers
   # TODO: not sure if needed
   # https://nixos.wiki/wiki/Nvidia#Booting_to_Text_Mode
   boot.extraModulePackages = [ config.boot.kernelPackages.nvidia_x11_beta ];
 
-  # TODO: look in to this
-  boot.kernelParams = ["nvidia_drm.fbdev=1"
-"nvidia.NVreg_UsePageAttributeTable=1" ];
+  # TODO: look in to this, I think it is for Prime configurations only
+  #boot.kernelParams = ["nvidia_drm.fbdev=1" "nvidia.NVreg_UsePageAttributeTable=1" ];
 
   boot.loader = {
     systemd-boot = {
@@ -60,5 +62,5 @@
     package = config.boot.kernelPackages.nvidiaPackages.beta;
     powerManagement.enable = true;
   };
-  #hardware.nvidia-container-toolkit.enable = true;
+  hardware.nvidia-container-toolkit.enable = true;
 }
