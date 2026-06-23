@@ -8,6 +8,7 @@
     ./settings.nix
     ./home-manager.nix
     ./users.nix
+    ./disko.nix
   ];
 
   flake.nixosConfigurations = let
@@ -31,6 +32,16 @@
         defaultModules
         ++ [
           ./hosts/devnix/configuration.nix
+          self.diskoConfigurations.devnix
+        ];
+    };
+    llm = inputs.nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules =
+        defaultModules
+        ++ [
+          ./hosts/llm/configuration.nix
+          self.diskoConfigurations.llm
         ];
     };
   };
