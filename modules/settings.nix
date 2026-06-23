@@ -49,6 +49,7 @@
       dig
       jq
       yq-go
+      pciutils
     ];
 
     environment.variables = {
