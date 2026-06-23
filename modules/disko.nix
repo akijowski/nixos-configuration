@@ -1,6 +1,6 @@
 {...}: {
   flake.diskoConfigurations = {
-    devnix = ./hosts/devnix/disk-config.nix;
-    llm = ./hosts/llm/disk-config.nix;
+    devnix = import ./hosts/devnix/disk-config.nix;
+    llm = import ./hosts/llm/disk-config.nix;
   };
 }
