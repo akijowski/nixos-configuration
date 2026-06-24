@@ -50,6 +50,8 @@
 
   home.packages = [
     pkgs.go-task
+    pkgs.llama-cpp # see package-overrides
+    pkgs.llama-swap
   ];
 
   home.stateVersion = "26.05";

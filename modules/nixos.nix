@@ -8,6 +8,7 @@
     ./settings.nix
     ./home-manager.nix
     # Removed. TODO: refactor to module with options for user and home-manager management.
+    # https://nixos.org/manual/nixos/stable/#sec-writing-modules
     #./users.nix
     ./disko.nix
   ];
@@ -17,6 +18,7 @@
       self.nixosModules.vmModule
       self.nixosModules.tailscaleModule
       # Removed. TODO: refactor to module with options for user and home-manager management.
+      # https://nixos.org/manual/nixos/stable/#sec-writing-modules
       #self.nixosModules.userModule
       self.nixosModules.systemModule
       self.nixosModules.homeManagerModule
