@@ -34,7 +34,7 @@
   # add nvidia x11 drivers
   # TODO: not sure if needed
   # https://nixos.wiki/wiki/Nvidia#Booting_to_Text_Mode
-  boot.extraModulePackages = [ config.boot.kernelPackages.nvidia_x11_beta ];
+  boot.extraModulePackages = [config.boot.kernelPackages.nvidia_x11_beta];
 
   # TODO: look in to this, I think it is for Prime configurations only
   #boot.kernelParams = ["nvidia_drm.fbdev=1" "nvidia.NVreg_UsePageAttributeTable=1" ];

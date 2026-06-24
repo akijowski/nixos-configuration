@@ -7,7 +7,8 @@
   imports = [
     ./settings.nix
     ./home-manager.nix
-    ./users.nix
+    # Removed. TODO: refactor to module with options for user and home-manager management.
+    #./users.nix
     ./disko.nix
   ];
 
@@ -15,7 +16,8 @@
     defaultModules = [
       self.nixosModules.vmModule
       self.nixosModules.tailscaleModule
-      self.nixosModules.userModule
+      # Removed. TODO: refactor to module with options for user and home-manager management.
+      #self.nixosModules.userModule
       self.nixosModules.systemModule
       self.nixosModules.homeManagerModule
       inputs.disko.nixosModules.disko
@@ -31,7 +33,7 @@
       modules =
         defaultModules
         ++ [
-          ./hosts/devnix/configuration.nix
+          ./hosts/devnix
           self.diskoConfigurations.devnix
         ];
     };
@@ -40,7 +42,7 @@
       modules =
         defaultModules
         ++ [
-          ./hosts/llm/configuration.nix
+          ./hosts/llm
           self.diskoConfigurations.llm
         ];
     };
