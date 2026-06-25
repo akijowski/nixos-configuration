@@ -4,57 +4,40 @@
   lib,
   ...
 }: {
-  home.username = "akijowski";
-  home.homeDirectory = "/home/akijowski";
+  imports = [
+    ../../home-manager/base.nix
+  ];
 
-  programs.delta = {
+  programs.opencode = {
     enable = true;
-    enableGitIntegration = true;
-    options = {
-      side-by-side = true;
-      hyperlinks = true;
-    };
-  };
-
-  programs.git = {
-    enable = true;
-    package = pkgs.gitFull;
     settings = {
-      user.name = "Adam Kijowski";
-      user.email = "agkijow@gmail.com";
-    };
-  };
-
-  programs.starship = {
-    enable = true;
-    enableZshIntegration = true;
-    settings = {
-      add_newline = true;
-      cmd_duration = {
-        min_time = 500;
+      autoshare = false;
+      autoupdate = true;
+      provider = {
+        "llama.cpp" = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "llama-swap (local)";
+          options = {
+            baseURL = "http://localhost:9292/v1";
+          };
+          models = {
+            "qwen3.6:27B-q4" = {
+              name = "Qwen3.6 27B (local)";
+              limit = {
+                context = 128000;
+                output = 65536;
+              };
+            };
+          };
+        };
       };
-      directory = {
-        fish_style_pwd_dir_length = 2;
-      };
-    };
-  };
-
-  programs.zsh = {
-    enable = true;
-    syntaxHighlighting.enable = true;
-    oh-my-zsh = {
-      enable = true;
-      plugins = ["git" "sudo"];
     };
   };
 
   home.packages = [
-    pkgs.go-task
-    pkgs.llama-cpp # see package-overrides
+    pkgs.llama-cpp
     pkgs.llama-swap
   ];
 
   home.stateVersion = "26.05";
-
-  programs.home-manager.enable = true;
 }

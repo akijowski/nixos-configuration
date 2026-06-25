@@ -47,7 +47,7 @@
               format = "ext4";
               mountpoint = "/nix";
               mountOptions = [
-                "noatime" # Reduce writes, access time is not necessary
+                "noatime"
               ];
             };
           };
