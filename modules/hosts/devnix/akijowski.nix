@@ -6,6 +6,7 @@
 }: {
   imports = [
     ../../home-manager/base.nix
+    ../../home-manager/llm.nix
   ];
 
   programs.zsh.envExtra = ''

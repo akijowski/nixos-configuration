@@ -21,7 +21,7 @@
       # QAT GGUF. Source: https://huggingface.co/unsloth/gemma-4-26B-A4B-it-qat-GGUF
       # Using MTP to see if there are improvements
       # Unsloth recommends UD-Q4_K_XL with temp=1.0, top_p=0.95, top_k=64.
-      "gemma-4:26b-q4":
+      "gemma-4:26B-q4":
         cmd: |
           ${pkgs.llama-cpp}/bin/llama-server
           --hf-repo unsloth/gemma-4-26B-A4B-it-qat-GGUF
