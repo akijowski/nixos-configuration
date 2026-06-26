@@ -139,4 +139,18 @@
       NoNewPrivileges = true;
     };
   };
+
+  # --- Invoke.AI --- #
+  # Open source image generation software
+
+  # see containers.nix
+  virtualisation.oci-containers.containers.invokeai = {
+    # https://github.com/invoke-ai/InvokeAI/pkgs/container/invokeai
+    image = "ghcr.io/invoke-ai/invokeai:sha-77a4d65-cuda@sha256:bdbd03f003d8537d3d29730e0fdb6842676811fbdf20009b59e08722bd71e455";
+    ports = ["9090:9090"];
+    devices = ["nvidia.com/gpu=all"];
+    volumes = [
+      "invokeai:/invokeai"
+    ];
+  };
 }
