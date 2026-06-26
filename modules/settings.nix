@@ -99,5 +99,9 @@
     systemd.services.tailscaled.serviceConfig.Environment = [
       "TS_DEBUG_FIREWALL_MODE=nftables"
     ];
+
+    # This may be okay to apply to all hosts,
+    # even if they are not actively using TS services
+    services.tailscale.serve.enable = true;
   };
 }

@@ -153,4 +153,13 @@
       "invokeai:/invokeai"
     ];
   };
+
+  services.tailscale.serve.services = {
+    invoke-ai = {
+      endpoints = {
+        "tcp:443" = "http://localhost:9090";
+      };
+      advertised = true;
+    };
+  };
 }
