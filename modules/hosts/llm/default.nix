@@ -4,5 +4,6 @@
     ./package-overrides.nix
     ./users.nix
     ./ai.nix
+    ./containers.nix
   ];
 }
