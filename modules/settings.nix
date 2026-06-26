@@ -1,8 +1,4 @@
-{
-  self,
-  inputs,
-  ...
-}: {
+{...}: {
   flake.nixosModules.systemModule = {...}: {
     system.autoUpgrade = {
       enable = true;

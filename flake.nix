@@ -19,6 +19,10 @@
       url = "github:kamadorueda/alejandra/4.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    git-hooks-nix = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -26,7 +30,6 @@
   };
 
   outputs = inputs @ {
-    self,
     flake-parts,
     alejandra,
     ...
@@ -38,6 +41,22 @@
         ./modules/flake-parts.nix
         ./modules/nixos.nix
       ];
+
+      perSystem = {
+        config,
+        pkgs,
+        ...
+      }: {
+        pre-commit.settings.hooks = {
+          alejandra.enable = true;
+          deadnix.enable = true;
+        };
+
+        devShells.default = pkgs.mkShell {
+          shellHook = config.pre-commit.shellHook;
+          packages = config.pre-commit.settings.enabledPackages;
+        };
+      };
 
       flake.formatter = alejandra.defaultPackage;
     };

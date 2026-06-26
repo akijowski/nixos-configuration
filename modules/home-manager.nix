@@ -1,8 +1,4 @@
-{
-  self,
-  inputs,
-  ...
-}: {
+{inputs, ...}: {
   flake.nixosModules.homeManagerModule = {...}: {
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = true;
