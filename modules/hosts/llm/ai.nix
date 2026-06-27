@@ -160,26 +160,26 @@
   # TODO: This does not seem to be working correctly for HTTPS
   # Manually made the services with `tailscale serve --service=<> --https=443 <>`
 
-  environment.etc."tailscale-serve/services.json".text = ''
-    {
-      "version": "0.0.1",
-      "services": {
-        "svc:invoke-ai": {
-          "endpoints": {
-            "tcp:443": "http://localhost:9090"
-           }
-         },
-         "svc:llama-swap": {
-           "endpoints": {
-             "tcp:443": "http://localhost:9292"
-           }
-         }
-       }
-     }
-  '';
+  #environment.etc."tailscale-serve/services.json".text = ''
+  #  {
+  #    "version": "0.0.1",
+  #    "services": {
+  #      "svc:invoke-ai": {
+  #        "endpoints": {
+  #          "tcp:443": "http://localhost:9090"
+  #         }
+  #       },
+  #       "svc:llama-swap": {
+  #         "endpoints": {
+  #           "tcp:443": "http://localhost:9292"
+  #         }
+  #       }
+  #     }
+  #   }
+  #'';
 
-  services.tailscale.serve = {
-    enable = true;
-    configFile = "/etc/tailscale-serve/services.json";
-  };
+  #services.tailscale.serve = {
+  #  enable = true;
+  #  configFile = "/etc/tailscale-serve/services.json";
+  #};
 }

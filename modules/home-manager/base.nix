@@ -47,6 +47,17 @@
     };
   };
 
+  programs.direnv = {
+    enable = true;
+    enableBashIntegration = true;
+    enableZshIntegration = true;
+    config = {
+      global = {
+        warn_timeout = "3m";
+      };
+    };
+  };
+
   home.packages = lib.mkBefore [
     pkgs.go-task
   ];
