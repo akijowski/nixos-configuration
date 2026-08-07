@@ -46,6 +46,9 @@
       jq
       yq-go
       pciutils
+      # enable ghostty xterm info: https://github.com/ghostty-org/ghostty/discussions/5753#discussioncomment-12197678
+      # Alternative is environment.enableAllTermInfo = true
+      ghostty.terminfo
     ];
 
     environment.variables = {
