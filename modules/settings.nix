@@ -78,6 +78,7 @@
       };
     };
     services.qemuGuest.enable = true;
+    services.spice-vdagentd.enable = true;
   };
 
   flake.nixosModules.tailscaleModule = {config, ...}: {
