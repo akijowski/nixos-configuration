@@ -30,6 +30,13 @@
                 output = 65536;
               };
             };
+            "orinth-1:35B-q4" = {
+              name = "Orinth v1 35B (local)";
+              limit = {
+                context = 128000;
+                output = 65536;
+              };
+            };
           };
         };
       };

@@ -18,6 +18,29 @@
 
     models:  # Ordered from newest to oldest
 
+    # Another thinking coding model
+    # Settings based on typical qwen3.5 model as a start
+    # Based on:
+    # https://huggingface.co/ornith-ai/Ornith-1.0-35B
+      "orinth-1:35B-q4":
+        cmd: |
+          ${pkgs.llama-cpp}/bin/llama-server
+          --hf-repo bartowski/deepreinforce-ai_Ornith-1.0-35B-GGUF
+          --hf-file deepreinforce-ai_Ornith-1.0-35B-Q4_1.gguf
+          --port ''${PORT}
+          --ctx-size 0
+          --fit on
+          --fit-target 2048
+          --fit-ctx 262144
+          --parallel 1
+          --batch-size 2048
+          --ubatch-size 512
+          --flash-attn on
+          --cache-type-k q8_0
+          --cache-type-v q8_0
+          --threads 2
+          --jinja
+
       # QAT GGUF. Source: https://huggingface.co/unsloth/gemma-4-26B-A4B-it-qat-GGUF
       # Using MTP to see if there are improvements
       # Unsloth recommends UD-Q4_K_XL with temp=1.0, top_p=0.95, top_k=64.
