@@ -24,21 +24,21 @@
             "qwen3.6:27B-q4" = {
               name = "Qwen3.6 27B (local)";
               limit = {
-                context = 128000;
+                context = 65536;
                 output = 65536;
               };
             };
             "gemma-4:26B-q4" = {
               name = "Gemma4 26B (local)";
               limit = {
-                context = 128000;
+                context = 262144;
                 output = 65536;
               };
             };
-            "orinth-1:35B-q4" = {
-              name = "Orinth v1 35B (local)";
+            "ornith-1:35B-q4" = {
+              name = "Ornith v1 35B (local)";
               limit = {
-                context = 128000;
+                context = 262144;
                 output = 65536;
               };
             };

@@ -22,7 +22,7 @@
     # Settings based on typical qwen3.5 model as a start
     # Based on:
     # https://huggingface.co/ornith-ai/Ornith-1.0-35B
-      "orinth-1:35B-q4":
+      "ornith-1:35B-q4":
         cmd: |
           ${pkgs.llama-cpp}/bin/llama-server
           --hf-repo bartowski/deepreinforce-ai_Ornith-1.0-35B-GGUF
@@ -116,7 +116,7 @@
           --ctx-size 0
           --fit on
           --fit-target 2048
-          --fit-ctx 16384
+          --fit-ctx 65536
           --parallel 1
           --batch-size 2048
           --ubatch-size 512
