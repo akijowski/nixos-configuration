@@ -45,4 +45,6 @@
       theme = "tokyonight";
     };
   };
+  # --- Herdr --- #
+  programs.herdr.enable = true;
 }

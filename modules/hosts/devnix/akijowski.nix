@@ -31,7 +31,7 @@
 
   home.packages = [
     pkgs.devenv
-    pkgs.secretspec
+    #pkgs.secretspec
   ];
 
   home.stateVersion = "25.11";
