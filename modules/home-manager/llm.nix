@@ -1,4 +1,9 @@
-{...}: {
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: {
   # --- OpenCode --- #
   programs.opencode = {
     enable = true;
@@ -47,4 +52,15 @@
   };
   # --- Herdr --- #
   programs.herdr.enable = true;
+
+  # --- Herdr Agent Skill --- #
+  home.file.".agents/skills/herdr/SKILL.md" =
+    lib.mkIf
+    (config.programs.opencode.enable && config.programs.herdr.enable)
+    {
+      source = pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/herdrdev/herdr/v0.8.0/skills/herdr/SKILL.md";
+        sha256 = "17xjkpxx1w9ari1pcczw1g1skl8l8sgdg0lxw042gygb08pii1h7";
+      };
+    };
 }

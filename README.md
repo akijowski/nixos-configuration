@@ -83,6 +83,18 @@ Format all Nix files:
 nix fmt
 ```
 
+### Fetching File Hashes
+
+When using `pkgs.fetchurl` in home-manager or NixOS modules, you need the sha256
+hash of the remote file. Compute it upfront with:
+
+```bash
+nix-prefetch-url <url>
+```
+
+This prints both the hash and the local store path. Paste the hash into your
+`sha256 = "..."` attribute — no guess-and-check rebuilds needed.
+
 ## Secrets
 
 Secrets are managed with [sops-nix](https://github.com/Mic92/sops-nix) using [age](https://github.com/FiloSottile/age) encryption.
