@@ -40,6 +40,7 @@
         vimrcConfig.customRC = builtins.readFile ./files/vimrc;
       })
       wget
+      fzf
       just
       htop
       dig
@@ -58,6 +59,10 @@
     programs = {
       zsh.enable = true;
       nix-ld.enable = true;
+      fzf = {
+        keybindings = true;
+        fuzzyCompletion = true;
+      };
       direnv = {
         enable = true;
         enableZshIntegration = true;
