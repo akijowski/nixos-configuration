@@ -15,6 +15,14 @@
     };
   };
 
+  # fzf is enabled system-wide
+  # however, home-manager will override the zshrc
+  # so we enable fzf and zsh integration here
+  programs.fzf = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
   programs.git = {
     enable = true;
     package = pkgs.gitFull;
