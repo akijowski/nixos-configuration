@@ -51,7 +51,17 @@
     };
   };
   # --- Herdr --- #
-  programs.herdr.enable = true;
+  programs.herdr = {
+    enable = true;
+    settings = {
+      theme.name = "rose-pine";
+      keys = {
+        prefix = "ctrl+a";
+        split_vertical = "prefix+%";
+        split_horizontal = "prefix+shift+'";
+      };
+    };
+  };
 
   # --- Herdr Agent Skill --- #
   home.file.".agents/skills/herdr/SKILL.md" =
