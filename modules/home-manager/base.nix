@@ -27,6 +27,7 @@
     enable = true;
     package = pkgs.gitFull;
     settings = {
+      init.defaultBranch = "main";
       user.name = "Adam Kijowski";
       user.email = "agkijow@gmail.com";
     };
