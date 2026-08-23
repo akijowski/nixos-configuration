@@ -63,6 +63,21 @@
     };
   };
 
+  # --- Herdr SSH Wrapper --- #
+  # Wrapper script that preserves SSH_AUTH_SOCK from parent shell
+  # See: https://github.com/herdrdev/herdr/issues/1931
+  # Herdr's server daemon doesn't inherit SSH_AUTH_SOCK from parent shell,
+  # so this wrapper preserves it by exec'ing herdr with the current environment
+  home.packages = with pkgs; [
+    (writeShellScriptBin "herdr-ssh" ''
+      # Wrapper for herdr that preserves SSH_AUTH_SOCK from parent shell
+      # See: https://github.com/herdrdev/herdr/issues/1931
+      # This fixes SSH agent forwarding in herdr panes (issue: herdr server daemon
+      # doesn't inherit SSH_AUTH_SOCK from parent shell)
+      exec herdr "$@"
+    '')
+  ];
+
   # --- Herdr Agent Skill --- #
   home.file.".agents/skills/herdr/SKILL.md" =
     lib.mkIf
