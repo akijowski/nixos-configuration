@@ -40,5 +40,14 @@
           self.diskoConfigurations.llm
         ];
     };
+    nasnix = inputs.nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules =
+        defaultModules
+        ++ [
+          ./hosts/nasnix
+          self.diskoConfigurations.nasnix
+        ];
+    };
   };
 }

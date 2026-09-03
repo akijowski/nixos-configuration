@@ -1,4 +1,6 @@
 {
+  # Requires at least a 75GiB virtual disk
+  # 8GiB swap + 50GiB Nix directory with remainder for other use
   disko.devices = {
     disk = {
       sda = {
