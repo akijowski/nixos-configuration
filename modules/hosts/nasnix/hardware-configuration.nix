@@ -10,7 +10,12 @@
 
   boot.initrd.availableKernelModules = ["uhci_hcd" "ehci_pci" "ahci" "virtio_pci" "virtio_scsi" "sd_mod" "sr_mod"];
   boot.initrd.kernelModules = ["dm-snapshot"];
-  boot.kernelModules = ["kvm-amd"];
+  boot.kernelModules = [
+    "kvm-amd"
+    # Exposes SATA drive temps as hwmon sensors
+    # Can read spun-down disks safely
+    "drivetemp"
+  ];
   boot.extraModulePackages = [];
 
   boot.loader = {
@@ -20,6 +25,8 @@
     };
     efi.canTouchEfiVariables = true;
   };
+
+  boot.supportedFilesystems = ["zfs"];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
