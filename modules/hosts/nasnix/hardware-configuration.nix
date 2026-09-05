@@ -31,5 +31,9 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
   networking.useDHCP = lib.mkDefault true;
+  # ZFS requires a stable host ID
+  # Generate a static string:
+  # head -c4 /dev/urandom | od -A none -t x4
+  networking.hostId = "0c92833a";
   # disk configuration managed by disko
 }
