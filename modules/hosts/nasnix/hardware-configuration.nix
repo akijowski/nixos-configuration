@@ -27,7 +27,14 @@
   };
 
   boot.supportedFilesystems = ["zfs"];
-  boot.zfs.forceImportRoot = false;
+  boot.zfs = {
+    devNodes = "/dev/disk/by-id";
+    extraPools = [
+      "tank0400"
+      "tank1600"
+    ];
+    forceImportRoot = lib.mkForce false;
+  };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
