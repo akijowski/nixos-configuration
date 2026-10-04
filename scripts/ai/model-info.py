@@ -1,16 +1,17 @@
 #!/usr/bin/env nix-shell
 #! nix-shell -i python3 -p python3
 import os
+import re
 import sys
 import struct
 import glob
 import json
+import argparse
 import urllib.request
 import datetime
 
-CACHE_DIR = os.path.expanduser("~/.cache/llama.cpp/")
+CACHE_DIR = os.path.expanduser("~/.cache/huggingface/hub/")
 
-# GGUF Value Types
 GGUF_TYPE_UINT8 = 0
 GGUF_TYPE_INT8 = 1
 GGUF_TYPE_UINT16 = 2
@@ -26,12 +27,19 @@ GGUF_TYPE_INT64 = 11
 GGUF_TYPE_FLOAT64 = 12
 
 
+QUANT_PATTERNS = [
+    r"(Q[0-9]+_[A-Z]+_[A-Z]+)",
+    r"(Q[0-9]+_[A-Z]+)",
+    r"(Q[0-9]+)",
+    r"(I[0-9]+)",
+]
+
+
 def read_string(f):
     len_bytes = f.read(8)
     if not len_bytes:
         return None
     length = struct.unpack("<Q", len_bytes)[0]
-    # Safety cap for strings
     if length > 1000000:
         return f.read(length).decode("utf-8", errors="ignore")
     return f.read(length).decode("utf-8", errors="ignore")
@@ -74,7 +82,6 @@ def read_value_scalar(f, val_type):
         return struct.unpack("<Q", f.read(8))[0]
     if val_type == GGUF_TYPE_INT64:
         return struct.unpack("<q", f.read(8))[0]
-    # If not a scalar type we care about, skip
     skip_value(f, val_type)
     return None
 
@@ -86,7 +93,7 @@ def read_gguf_info(filepath):
             if magic != b"GGUF":
                 return None
 
-            f.read(4)  # Skip version
+            f.read(4)
             tensor_count = struct.unpack("<Q", f.read(8))[0]
             kv_count = struct.unpack("<Q", f.read(8))[0]
 
@@ -113,7 +120,6 @@ def read_gguf_info(filepath):
                 else:
                     skip_value(f, val_type)
 
-            # Resolve Context
             ctx = None
             non_train = {
                 k: v for k, v in candidates_ctx.items() if not k.endswith("_train")
@@ -123,21 +129,25 @@ def read_gguf_info(filepath):
             elif candidates_ctx:
                 ctx = max(candidates_ctx.values())
 
-            # Resolve Layers
             layers = None
             if candidates_layers:
-                # Usually there's only one block_count, e.g. llama.block_count
                 layers = max(candidates_layers.values())
 
             return {
                 "ctx": ctx,
                 "layers": layers,
-                "tensor_count": tensor_count,
             }
-
     except Exception:
-        # print(f"Error parsing {filepath}: {e}")
         return None
+
+
+def parse_quant(filepath):
+    fname = os.path.basename(filepath)
+    for pattern in QUANT_PATTERNS:
+        match = re.search(pattern, fname, re.IGNORECASE)
+        if match:
+            return match.group(1)
+    return "?"
 
 
 def find_files(query):
@@ -150,23 +160,24 @@ def find_files(query):
     if ":" in query:
         repo, tag = query.split(":", 1)
 
-    safe_repo = repo.replace("/", "_")
-
-    pattern = os.path.join(CACHE_DIR, f"*{safe_repo}*")
-    candidates = glob.glob(pattern)
+    safe_repo = repo.replace("/", "--")
+    pattern = os.path.join(CACHE_DIR, f"**", f"*{safe_repo}*", "**", "*.gguf")
+    candidates = glob.glob(pattern, recursive=True)
 
     valid_files = []
     for c in candidates:
-        if c.endswith(".json") or c.endswith(".etag") or "downloadInProgress" in c:
+        if tag and tag.lower() not in c.lower():
             continue
-
-        if tag:
-            if tag.lower() not in c.lower():
-                continue
-
         valid_files.append(c)
 
     return valid_files
+
+
+def find_all_cached_files():
+    if not os.path.exists(CACHE_DIR):
+        return []
+
+    return glob.glob(os.path.join(CACHE_DIR, "**", "*.gguf"), recursive=True)
 
 
 def fetch_hf_date(repo):
@@ -183,56 +194,143 @@ def fetch_hf_date(repo):
     return None
 
 
-def main():
-    if len(sys.argv) < 2:
-        print("Usage: get_model_info.py <repo/name:tag> or <path/to/file>")
-        sys.exit(1)
+def format_size_gb(size_bytes):
+    return f"{size_bytes / (1024**3):.1f} GB"
 
-    query = sys.argv[1]
-    files = find_files(query)
 
-    repo_name = None
-    if ":" in query and not os.path.exists(query):
-        repo_name = query.split(":", 1)[0]
-    elif not os.path.exists(query):
-        repo_name = query
+def extract_repo_from_path(filepath):
+    parts = filepath.split("/")
+    models_idx = None
+    for i, p in enumerate(parts):
+        if p == "models--" or "--" in p:
+            if p.startswith("models--"):
+                return p.replace("models--", "")
+            elif "--" in p:
+                return p.replace("--", "/").replace("-", " ", 1)
+    return None
 
-    if not files:
-        print(f"No files found for '{query}'")
-        sys.exit(1)
 
+def print_model_info(files, show_path=True, fetch_date=True, main_file=None):
     total_size = sum(os.path.getsize(f) for f in files)
-    size_gb = total_size / (1024**3)
 
-    main_file = files[0]
-    for f in files:
-        if "mmproj" not in f and "split" not in f and f.endswith(".gguf"):
-            main_file = f
-            break
-        elif "00001-of-" in f:
-            main_file = f
+    if not main_file:
+        main_file = files[0]
+        for f in files:
+            if "mmproj" not in f and "split" not in f and "mtp" not in f and f.endswith(".gguf"):
+                main_file = f
+                break
+            elif "00001-of-" in f:
+                main_file = f
 
     info = read_gguf_info(main_file)
     ctx = info["ctx"] if info else None
-    layers = info["layers"] if info else "?"
+    layers = info["layers"] if info else None
 
-    # Only print tensors if layers not found, or maybe just don't print tensors?
-    # User specifically asked about "layers" being wrong.
+    quant = parse_quant(main_file)
+
+    repo_name = None
+    repo_name = extract_repo_from_path(main_file)
+    if not repo_name:
+        fname = os.path.basename(main_file)
+        for pattern in [r"[/_]([A-Za-z0-9]+-[A-Za-z0-9.]+-GGUF)", r"[/_]([A-Za-z0-9]+-[A-Za-z0-9.]+)"]:
+            match = re.search(pattern, fname)
+            if match:
+                repo_name = match.group(1)
+                break
 
     date_str = None
-    if repo_name:
+    if fetch_date and repo_name:
         date_str = fetch_hf_date(repo_name)
-
     if not date_str:
         date_str = "????"
 
     ctx_str = str(ctx) if ctx else "????"
-    layers_str = str(layers) if layers != "?" and layers is not None else "?"
+    layers_str = str(layers) if layers is not None else "?"
+
+    aux_files = [f for f in files if f != main_file]
+
+    if show_path:
+        print(f"  File: {main_file}")
+        for af in aux_files:
+            print(f"        {os.path.basename(af)} ({format_size_gb(os.path.getsize(af))})")
 
     print(
-        f"# Uploaded {date_str}, size {size_gb:.1f} GB, max ctx: {ctx_str}, "
-        f"layers: {layers_str}"
+        f"  Uploaded: {date_str} | {format_size_gb(total_size)} | "
+        f"Quant: {quant} | Ctx: {ctx_str} | Layers: {layers_str}"
     )
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Show info about cached LLM models"
+    )
+    parser.add_argument(
+        "query",
+        nargs="?",
+        default=None,
+        help="Repo/name:tag or path to file",
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="List all cached models",
+    )
+    parser.add_argument(
+        "--no-date",
+        action="store_true",
+        help="Skip HuggingFace API call for upload date",
+    )
+    args = parser.parse_args()
+
+    if args.all:
+        files = find_all_cached_files()
+        if not files:
+            print("No cached files found.")
+            return
+
+        print(f"Cache: {CACHE_DIR}")
+        print(f"{'='*70}")
+
+        repos = {}
+        for f in sorted(files):
+            dirname = os.path.dirname(f)
+            if dirname not in repos:
+                repos[dirname] = []
+            repos[dirname].append(f)
+
+        repo_dirs = list(repos.keys())
+        deduped = []
+        seen_base = set()
+        for rd in repo_dirs:
+            base = rd.split("models--")[1] if "models--" in rd else rd
+            base = re.sub(r"/snapshots.*$", "", base)
+            if base not in seen_base:
+                seen_base.add(base)
+                deduped.append(rd)
+
+        for repo_dir in deduped:
+            repo_files = repos[repo_dir]
+            main_file = None
+            for f in repo_files:
+                if "mmproj" not in f and "split" not in f and "mtp" not in f and f.endswith(".gguf"):
+                    main_file = f
+                    break
+            if not main_file:
+                main_file = repo_files[0]
+
+            print_model_info(repo_files, main_file=main_file, fetch_date=not args.no_date)
+            print()
+
+    elif args.query:
+        files = find_files(args.query)
+        if not files:
+            print(f"No files found for '{args.query}'", file=sys.stderr)
+            sys.exit(1)
+
+        print_model_info(files, fetch_date=not args.no_date)
+    else:
+        parser.print_help()
+        sys.exit(1)
 
 
 if __name__ == "__main__":

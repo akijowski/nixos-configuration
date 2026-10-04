@@ -7,17 +7,18 @@
 # ///
 import os
 import re
+import sys
 import yaml
 import glob
-import sys
+import argparse
 
 CONFIG_YAML_PATH = "/etc/llama-swap/config.yaml"
-CACHE_DIR = os.path.expanduser("~/.cache/llama.cpp/")
+CACHE_DIR = os.path.expanduser("~/.cache/huggingface/hub/")
 
 
 def get_configured_models():
     if not os.path.exists(CONFIG_YAML_PATH):
-        print(f"Error: {CONFIG_YAML_PATH} not found.")
+        print(f"Error: {CONFIG_YAML_PATH} not found.", file=sys.stderr)
         sys.exit(1)
 
     with open(CONFIG_YAML_PATH, "r") as f:
@@ -33,7 +34,6 @@ def get_configured_models():
         for model_config in models.values():
             cmd = model_config.get("cmd", "")
 
-            # Extract repo
             match = re.search(r"(?:-hf|--hf-repo)\s+([^\s]+)", cmd)
             if match:
                 repo_tag = match.group(1)
@@ -41,7 +41,6 @@ def get_configured_models():
                     repo_tag = repo_tag.split(":")[0]
                 configured_repos.append(repo_tag)
 
-            # Extract mmproj-url filename
             match_mmproj = re.search(r"--mmproj-url\s+([^\s]+)", cmd)
             if match_mmproj:
                 url = match_mmproj.group(1)
@@ -50,87 +49,104 @@ def get_configured_models():
 
         return configured_repos, configured_files
     except yaml.YAMLError as e:
-        print(f"Error parsing YAML: {e}")
+        print(f"Error parsing YAML: {e}", file=sys.stderr)
         sys.exit(1)
 
 
 def get_cached_files():
     if not os.path.exists(CACHE_DIR):
-        print(f"Cache directory {CACHE_DIR} does not exist.")
+        print(f"Cache directory {CACHE_DIR} does not exist.", file=sys.stderr)
         return []
 
-    # We look for files that look like model files
-    files = glob.glob(os.path.join(CACHE_DIR, "*"))
-    return files
+    return glob.glob(os.path.join(CACHE_DIR, "**", "*.gguf"), recursive=True)
 
 
-def main():
-    configured_repos, configured_files = get_configured_models()
-    # Normalize configured repos for matching against cache filenames
-    # unsloth/Qwen3 -> unsloth_Qwen3
-    configured_patterns = [repo.replace("/", "_").lower() for repo in configured_repos]
-
-    # Add specific files to patterns (or check explicitly)
-    # configured_files are exact filenames like "mmproj-model-f16.gguf"
-
+def find_unused_files(configured_repos, configured_files):
     cached_files = get_cached_files()
 
-    unused_files = []
+    unused = []
     total_size = 0
-
-    print(f"{'Unused Cached File':<60} | {'Size (GB)':<10}")
-    print("-" * 75)
 
     for f in cached_files:
         if os.path.isdir(f):
             continue
 
         fname = os.path.basename(f)
-        fname_lower = fname.lower()
 
-        # Check if this file belongs to any configured repo or matches a configured file
         is_configured = False
 
-        # Check repos
-        for pattern in configured_patterns:
-            if pattern in fname_lower:
+        for repo in configured_repos:
+            repo_path = "models--" + repo.replace("/", "--") + "/"
+            if repo_path in f:
                 is_configured = True
                 break
 
-        # Check specific files
         if not is_configured:
-            if fname in configured_files:
-                is_configured = True
+            for cf in configured_files:
+                if cf in fname:
+                    is_configured = True
+                    break
 
         if not is_configured:
-            # Check for common extensions to avoid listing random metadata files if desired,
-            # though usually we want to clean everything.
-            if not (
-                fname.endswith(".json") or fname.endswith(".etag")
-            ):  # Optional: filter only heavy files
-                size = os.path.getsize(f)
-                size_gb = size / (1024**3)
-                unused_files.append((f, size_gb))
-                print(f"{fname:<60} | {size_gb:.2f}")
-                total_size += size_gb
+            size = os.path.getsize(f)
+            size_gb = size / (1024 ** 3)
+            unused.append((f, size_gb))
+            total_size += size_gb
+
+    return unused, total_size
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Clean unused cached models from llama.cpp cache"
+    )
+    parser.add_argument(
+        "--force",
+        "-y",
+        action="store_true",
+        help="Skip confirmation prompt and delete immediately",
+    )
+    args = parser.parse_args()
+
+    configured_repos, configured_files = get_configured_models()
+    unused_files, total_size = find_unused_files(configured_repos, configured_files)
+
+    print(f"{'File':<60} | {'Size (GB)':<10}")
+    print("-" * 75)
+
+    for f, size_gb in unused_files:
+        print(f"{os.path.basename(f):<60} | {size_gb:.2f}")
 
     print("-" * 75)
-    print(f"Total potentially unused size: {total_size:.2f} GB")
+    print(f"Total potentially unused: {total_size:.2f} GB")
 
-    if unused_files:
-        response = input("\nDo you want to delete these files? (y/N): ").strip().lower()
-        if response == "y":
-            for f, size in unused_files:
-                try:
-                    os.remove(f)
-                    print(f"Deleted {os.path.basename(f)}")
-                except Exception as e:
-                    print(f"Error deleting {f}: {e}")
-            print("Cleanup complete.")
-        else:
-            print("No files deleted.")
-    else:
+    if not unused_files:
         print("No unused files found.")
+        return
+
+    if not args.force:
+        response = input(
+            "\nDo you want to delete these files? (y/N): "
+        ).strip().lower()
+        if response != "y":
+            print("No files deleted.")
+            return
+
+    deleted = 0
+    errors = 0
+    for f, _ in unused_files:
+        try:
+            os.remove(f)
+            print(f"Deleted {os.path.basename(f)}")
+            deleted += 1
+        except Exception as e:
+            print(f"Error deleting {f}: {e}", file=sys.stderr)
+            errors += 1
+
+    print(f"\nCleanup complete: {deleted} deleted, {errors} errors.")
+
+    if errors:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
