@@ -4,6 +4,32 @@
 
   models:  # Ordered from newest to oldest
 
+  # https://huggingface.co/unsloth/Qwen3.8-27B-GGUF
+    "qwen3.8:27B-q4":
+      cmd: |
+        ${pkgs.llama-cpp}/bin/llama-server
+        --hf-repo unsloth/Qwen3.8-27B-GGUF
+        --hf-file Qwen3.8-27B-UD-Q4_K_XL.gguf
+        --port ''${PORT}
+        --n-gpu-layers 99
+        --ctx-size 0
+        --fit on
+        --fit-target 512
+        --fit-ctx 65536
+        --parallel 1
+        --batch-size 2048
+        --ubatch-size 1024
+        --flash-attn on
+        --cache-type-k q8_0
+        --cache-type-v q8_0
+        --temp 1.0
+        --top-p 0.95
+        --top-k 20
+        --min-p 0
+        #--split-mode layer
+        --threads 2
+        --jinja
+
   # Another thinking coding model
   # Settings based on typical qwen3.5 model as a start
   # Based on:
@@ -90,28 +116,28 @@
     # size 16.7 GB, max ctx: 262144, layers: 65
     # Qwen3.6 aliases keep mmproj enabled and speculative MTP disabled
     # https://huggingface.co/unsloth/Qwen3.6-27B-MTP-GGUF
-    "qwen3.6:27B-q4":
-      cmd: |
-        ${pkgs.llama-cpp}/bin/llama-server
-        --hf-repo unsloth/Qwen3.6-27B-MTP-GGUF
-        --hf-file Qwen3.6-27B-UD-Q4_K_XL.gguf
-        --mmproj-url https://huggingface.co/unsloth/Qwen3.6-27B-MTP-GGUF/resolve/main/mmproj-F16.gguf
-        --chat-template-file /etc/llama-templates/qwen36-custom.jinja
-        --port ''${PORT}
-        --n-gpu-layers 99
-        --ctx-size 0
-        --fit on
-        --fit-target 2048
-        --fit-ctx 65536
-        --parallel 1
-        --batch-size 2048
-        --ubatch-size 512
-        --flash-attn on
-        --cache-type-k q8_0
-        --cache-type-v q8_0
-        #--split-mode layer
-        --threads 2
-        --jinja
+    #"qwen3.6:27B-q4":
+    #  cmd: |
+    #    ${pkgs.llama-cpp}/bin/llama-server
+    #    --hf-repo unsloth/Qwen3.6-27B-MTP-GGUF
+    #    --hf-file Qwen3.6-27B-UD-Q4_K_XL.gguf
+    #    --mmproj-url https://huggingface.co/unsloth/Qwen3.6-27B-MTP-GGUF/resolve/main/mmproj-F16.gguf
+    #    --chat-template-file /etc/llama-templates/qwen36-custom.jinja
+    #    --port ''${PORT}
+    #    --n-gpu-layers 99
+    #    --ctx-size 0
+    #    --fit on
+    #    --fit-target 2048
+    #    --fit-ctx 65536
+    #    --parallel 1
+    #    --batch-size 2048
+    #    --ubatch-size 512
+    #    --flash-attn on
+    #    --cache-type-k q8_0
+    #    --cache-type-v q8_0
+    #    #--split-mode layer
+    #    --threads 2
+    #    --jinja
 
   # size 0.1 GB, max ctx: 8192, layers: 30
     "smollm2:135m":

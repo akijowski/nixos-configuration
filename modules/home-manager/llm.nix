@@ -21,25 +21,25 @@
             baseURL = "https://llama-swap.tail1936d9.ts.net/v1";
           };
           models = {
-            "qwen3.6:27B-q4" = {
-              name = "Qwen3.6 27B (local)";
+            "qwen3.8:27B-q4" = {
+              name = "Qwen3.8 27B (local)";
               limit = {
-                context = 65536;
-                output = 65536;
+                context = 49152;
+                output = 16384;
               };
             };
             "gemma-4:26B-q4" = {
               name = "Gemma4 26B (local)";
               limit = {
-                context = 262144;
-                output = 65536;
+                context = 32768;
+                output = 16384;
               };
             };
             "ornith-1:35B-q4" = {
               name = "Ornith v1 35B (local)";
               limit = {
-                context = 262144;
-                output = 65536;
+                context = 32768;
+                output = 16384;
               };
             };
           };
