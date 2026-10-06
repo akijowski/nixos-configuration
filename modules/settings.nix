@@ -1,9 +1,10 @@
 {
   flake.nixosModules.systemModule = {
-    system.autoUpgrade = {
-      enable = true;
-      allowReboot = true;
-    };
+    # Disable since all instances are flake-based configs
+    #system.autoUpgrade = {
+    #  enable = true;
+    #  allowReboot = true;
+    #};
 
     nix = {
       gc = {
