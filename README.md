@@ -95,6 +95,30 @@ nix-prefetch-url <url>
 This prints both the hash and the local store path. Paste the hash into your
 `sha256 = "..."` attribute — no guess-and-check rebuilds needed.
 
+### Nix REPL
+
+A REPL can be launched against the flake, giving the opportunity to inspect
+attributes.
+
+```bash
+nix repl
+```
+
+Then load the flake:
+
+```bash
+:lf .#
+```
+
+```bash
+nix-repl> nixosConfigurations
+{
+  devnix = { ... };
+  llm = { ... };
+  nasnix = { ... };
+}
+```
+
 ## Secrets
 
 Secrets are managed with [sops-nix](https://github.com/Mic92/sops-nix) using [age](https://github.com/FiloSottile/age) encryption.

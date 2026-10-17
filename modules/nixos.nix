@@ -46,6 +46,8 @@
         defaultModules
         ++ [
           ./hosts/nasnix
+          # uses sops outside of home-manager
+          inputs.sops-nix.nixosModules.sops
           self.diskoConfigurations.nasnix
         ];
     };
