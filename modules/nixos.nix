@@ -33,6 +33,7 @@
     };
     llm = inputs.nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
+      # Pass stable input to kernel-pinning overlay module
       specialArgs = {
         inherit (inputs) stable;
       };
