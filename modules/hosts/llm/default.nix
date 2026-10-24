@@ -5,6 +5,5 @@
     ./users.nix
     ./ai.nix
     ./containers.nix
-    ./kernel-pinning.nix
   ];
 }
